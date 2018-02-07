@@ -7,6 +7,16 @@ require('./config/passport')(passport);
 
 // Load routes 
 const auth = require('./routes/auth');
+
+const keys = require('./config/keys');
+
+mongoose.Promise = global.Promise;
+
+mongoose.connect(keys.mongoURI,{
+    
+}).then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
+
 const app = express();
 
 app.get('/' , (req, res) => {
@@ -17,7 +27,9 @@ app.get('/' , (req, res) => {
 app.use('/auth', auth);
 //588847944644-5ji47ghqq4vklr0331qf4rspmmmo2hr2.apps.googleusercontent.com
 //Ky5oS1-1yHTkyTym17qwM5gc
+
 const port = process.env.PORT || 8081;
+
 
 app.listen(port, () =>{
     console.log(`Server started on port: ${port }`);
