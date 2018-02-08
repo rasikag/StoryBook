@@ -5,31 +5,31 @@ const keys = require('./keys');
 // Load user model 
 const User = mongoose.model('users');
 
-module.exports = function(passport){
+module.exports = function (passport) {
     passport.use(
         new GoogleStrategy({
             clientID: keys.googleClientID,
             clientSecret: keys.googleClientSecret,
             callbackURL: "/auth/google/callback",
             proxy: true
-        }, (accessToken, refreshToken, profile, done) =>{
-            const image = profile.photos[0].value.substring(0, 
+        }, (accessToken, refreshToken, profile, done) => {
+            const image = profile.photos[0].value.substring(0,
                 profile.photos[0].value.indexOf('?'));
 
             const newUser = {
-                googleID : profile.id,
-                firstName : profile.name.givenName,
-                lastName : profile.name.familyName,
-                email : profile.emails[0].value,
-                image :  image
+                googleID: profile.id,
+                firstName: profile.name.givenName,
+                lastName: profile.name.familyName,
+                email: profile.emails[0].value,
+                image: image
             };
 
-            User.findOne({ 
-                googleID : profile.id
+            User.findOne({
+                googleID: profile.id
             }).then(user => {
-                if(user){
+                if (user) {
                     done(null, user);
-                } else{
+                } else {
                     // Create new user 
                     new User(newUser)
                         .save()
@@ -38,4 +38,14 @@ module.exports = function(passport){
             });
         })
     );
+
+    passport.serializeUser((user, done) => {
+        done(null, user.id);
+    });
+
+    passport.deserializeUser((id, done) => {
+        User.findById(id, function (err, user) {
+            done(err, user);
+        });
+    });
 }  

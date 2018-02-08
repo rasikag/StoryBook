@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
 
+// Load user model
+require('./models/User');
+
 // Passport configuration 
 require('./config/passport')(passport);
 
@@ -27,6 +30,10 @@ app.get('/' , (req, res) => {
 app.use('/auth', auth);
 //588847944644-5ji47ghqq4vklr0331qf4rspmmmo2hr2.apps.googleusercontent.com
 //Ky5oS1-1yHTkyTym17qwM5gc
+
+// Passport middleware 
+app.use(passport.initialize());
+app.use(passport.session());
 
 const port = process.env.PORT || 8081;
 
