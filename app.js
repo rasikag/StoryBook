@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 // Load user model
 require('./models/User');
@@ -26,17 +28,21 @@ app.get('/' , (req, res) => {
     res.send('Get');
 });
 
-// use auth route
-app.use('/auth', auth);
-//588847944644-5ji47ghqq4vklr0331qf4rspmmmo2hr2.apps.googleusercontent.com
-//Ky5oS1-1yHTkyTym17qwM5gc
+app.use(cookieParser());
+app.use(session({
+    secret : 'secret',
+    resave : false,
+    saveUninitialized : false
+}));
 
 // Passport middleware 
 app.use(passport.initialize());
 app.use(passport.session());
 
-const port = process.env.PORT || 8081;
+// use auth route
+app.use('/auth', auth);
 
+const port = process.env.PORT || 8081;
 
 app.listen(port, () =>{
     console.log(`Server started on port: ${port }`);
