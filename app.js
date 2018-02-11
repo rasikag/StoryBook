@@ -1,4 +1,5 @@
 const express = require('express');
+var exphbs  = require('express-handlebars');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
@@ -26,7 +27,9 @@ mongoose.connect(keys.mongoURI,{
 
 const app = express();
 
-
+app.engine('handlebars', exphbs({
+     defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 app.use(cookieParser());
 app.use(session({
